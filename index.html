@@ -107,12 +107,6 @@
     .theme-space h1, .theme-space p { color: #f5f3ff; }
     #compliment-text { color: #000000 !important; }
     .theme-space #compliment-text { color: #000000 !important; }
-    .reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behavior: auto !important;
-      transition-duration: 0.01ms !important;
-    }
   </style>
 </head>
 <body class="theme-candy bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
@@ -158,11 +152,6 @@
     <button id="compliment-button" type="button" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all duration-150 cursor-pointer">
       Give Me a Compliment 🚀
     </button>
-    <button id="surprise-button" type="button" class="mt-3 text-sm font-semibold text-purple-700 underline underline-offset-2">Reveal today's surprise ✨</button>
-    <label class="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
-      <input id="reduce-motion" type="checkbox" class="rounded" />
-      Reduce motion
-    </label>
   </main>
 
   <script>
@@ -383,17 +372,6 @@
       fireConfetti();
     }
 
-    function showDailySurprise() {
-      const today = new Date().toISOString().slice(0, 10);
-      const surpriseKey = `dailyBoostSurprise-${today}`;
-      const savedIndex = localStorage.getItem(surpriseKey);
-      const options = complimentsByMood[selectedMood];
-      const index = savedIndex === null ? Math.floor(Math.random() * options.length) : Number(savedIndex);
-      localStorage.setItem(surpriseKey, String(index));
-      document.getElementById("boost-mode").value = "compliment";
-      triggerMagic(index);
-    }
-
     document.querySelectorAll(".mood-button").forEach((button) => {
       button.addEventListener("click", () => {
         selectedMood = button.dataset.mood;
@@ -426,18 +404,9 @@
       event.currentTarget.setAttribute("aria-label", soundMuted ? "Turn sound on" : "Turn sound off");
     });
 
-    document.getElementById("reduce-motion").addEventListener("change", (event) => {
-      document.body.classList.toggle("reduce-motion", event.target.checked);
-      localStorage.setItem("dailyBoostReduceMotion", String(event.target.checked));
-    });
-
-    const reduceMotion = localStorage.getItem("dailyBoostReduceMotion") === "true";
-    document.getElementById("reduce-motion").checked = reduceMotion;
-    document.body.classList.toggle("reduce-motion", reduceMotion);
     document.getElementById("mute-button").textContent = soundMuted ? "🔇" : "🔊";
     document.getElementById("mute-button").setAttribute("aria-pressed", String(soundMuted));
 
-    document.getElementById("surprise-button").addEventListener("click", showDailySurprise);
     document.getElementById("compliment-button").addEventListener("click", triggerMagic);
   </script>
 </body>

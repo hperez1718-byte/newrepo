@@ -46,7 +46,13 @@
   <main class="bg-white/85 backdrop-blur-md shadow-xl rounded-2xl p-8 max-w-md w-full text-center border border-white relative z-10">
     <div id="emoji-icon" class="text-5xl mb-3 bounce-emoji select-none" aria-live="polite">✨</div>
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Daily Boost</h1>
-    <p class="text-sm text-gray-500 mb-6">Click the button below whenever you need a quick pick-me-up.</p>
+    <p class="text-sm text-gray-500 mb-5">Choose your mood, then get a boost made for you.</p>
+
+    <div class="grid grid-cols-3 gap-2 mb-6" role="group" aria-label="Choose your mood">
+      <button type="button" data-mood="tired" class="mood-button rounded-lg border border-purple-200 bg-purple-50 px-2 py-2 text-sm font-medium text-purple-800 transition hover:bg-purple-100" aria-pressed="true">😴 Tired</button>
+      <button type="button" data-mood="happy" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-yellow-50" aria-pressed="false">😄 Happy</button>
+      <button type="button" data-mood="brave" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-blue-50" aria-pressed="false">🦁 Brave</button>
+    </div>
 
     <div class="min-h-[100px] flex items-center justify-center bg-purple-50 rounded-xl p-4 mb-6 border border-purple-100 shadow-inner">
       <p id="compliment-text" class="text-lg font-medium text-purple-900 fade-in" aria-live="polite">
@@ -60,19 +66,25 @@
   </main>
 
   <script>
-    const compliments = [
-      { text: "You bring the kind of energy that makes Wi-Fi connect instantly.", emoji: "📶" },
-      { text: "If you were a vegetable, you'd be a 'cute-cumber'.", emoji: "🥒" },
-      { text: "Your hidden talents probably include fixing things just by looking at them.", emoji: "🛠️" },
-      { text: "You are remarkably good at surviving Mondays.", emoji: "🦖" },
-      { text: "Your playlist curation skills deserve an international award.", emoji: "🎧" },
-      { text: "On a scale of 1 to 10, you are definitely an eleven-hundredth.", emoji: "💯" },
-      { text: "You have the kind of laugh that makes other people want to laugh too.", emoji: "😂" },
-      { text: "Even your typos add character and charm.", emoji: "✍️" },
-      { text: "You're proof that awesome humans actually exist.", emoji: "👽" },
-      { text: "Your brainstorming ideas are absolute masterpieces.", emoji: "🎨" }
-    ];
+    const complimentsByMood = {
+      tired: [
+        { text: "You are allowed to take it one tiny, cozy step at a time.", emoji: "🛌" },
+        { text: "Even your slow days are still moving you forward.", emoji: "🐢" },
+        { text: "You have survived every difficult day before this one.", emoji: "🌤️" }
+      ],
+      happy: [
+        { text: "Your good mood is so contagious, Wi-Fi is trying to catch it.", emoji: "📶" },
+        { text: "You are basically a walking confetti cannon of joy.", emoji: "🎉" },
+        { text: "Your laugh makes ordinary moments feel legendary.", emoji: "😂" }
+      ],
+      brave: [
+        { text: "You have the kind of courage that makes dragons check their calendars.", emoji: "🐉" },
+        { text: "You do not need to feel fearless to be incredibly brave.", emoji: "🛡️" },
+        { text: "The next chapter is lucky to have you as its main character.", emoji: "📖" }
+      ]
+    };
 
+    let selectedMood = "tired";
     let lastIndex = -1;
 
     function playPopSound() {
@@ -113,6 +125,7 @@
     function triggerMagic() {
       const textBox = document.getElementById("compliment-text");
       const emojiBox = document.getElementById("emoji-icon");
+      const compliments = complimentsByMood[selectedMood];
       let randomIndex;
 
       do {
@@ -132,6 +145,23 @@
       playPopSound();
       fireConfetti();
     }
+
+    document.querySelectorAll(".mood-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedMood = button.dataset.mood;
+        lastIndex = -1;
+        document.querySelectorAll(".mood-button").forEach((moodButton) => {
+          const isSelected = moodButton === button;
+          moodButton.setAttribute("aria-pressed", String(isSelected));
+          moodButton.classList.toggle("border-purple-200", isSelected);
+          moodButton.classList.toggle("bg-purple-50", isSelected);
+          moodButton.classList.toggle("text-purple-800", isSelected);
+          moodButton.classList.toggle("border-transparent", !isSelected);
+          moodButton.classList.toggle("bg-gray-50", !isSelected);
+          moodButton.classList.toggle("text-gray-600", !isSelected);
+        });
+      });
+    });
 
     document.getElementById("compliment-button").addEventListener("click", triggerMagic);
   </script>

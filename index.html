@@ -133,9 +133,6 @@
         <option value="challenge">Tiny challenge mode</option>
         <option value="calm">Calm moment mode</option>
       </select>
-      <button id="mute-button" type="button" class="rounded-lg bg-gray-100 px-3 py-2 text-sm" aria-pressed="false" aria-label="Turn sound off">🔊</button>
-      <button id="music-button" type="button" class="rounded-lg bg-gray-100 px-3 py-2 text-sm" aria-pressed="false" aria-label="Start ambient music">🎵</button>
-      <button id="uplift-button" type="button" class="rounded-lg bg-yellow-100 px-3 py-2 text-sm" aria-label="Play uplifting song">✨🎶</button>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6" role="group" aria-label="Choose your mood">
@@ -310,118 +307,6 @@
 
     let selectedMood = "tired";
     let lastIndex = -1;
-    let soundMuted = localStorage.getItem("dailyBoostMuted") === "true";
-    let audioContext;
-    let musicNodes = [];
-    let musicTimer;
-
-    function getAudioContext() {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return null;
-      audioContext = audioContext || new AudioContext();
-      return audioContext;
-    }
-
-    function playPopSound() {
-      if (soundMuted) return;
-      try {
-        const context = getAudioContext();
-        if (!context) return;
-        const oscillator = context.createOscillator();
-        const gainNode = context.createGain();
-
-        oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(400, context.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(800, context.currentTime + 0.1);
-        gainNode.gain.setValueAtTime(0.3, context.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.15);
-
-        oscillator.connect(gainNode);
-        gainNode.connect(context.destination);
-        oscillator.start();
-        oscillator.stop(context.currentTime + 0.15);
-      } catch (error) {
-        // Audio may be unavailable in the current browser context.
-      }
-    }
-
-    function playUpliftingSong() {
-      if (soundMuted) return;
-      try {
-        const context = getAudioContext();
-        if (!context) return;
-
-        // A short original melody: bright, simple, and safe to generate locally.
-        const notes = [
-          523.25, 659.25, 783.99, 659.25,
-          587.33, 698.46, 880, 783.99,
-          523.25, 659.25, 783.99, 1046.5
-        ];
-        const startTime = context.currentTime;
-        const noteLength = 0.18;
-
-        notes.forEach((frequency, index) => {
-          const oscillator = context.createOscillator();
-          const gainNode = context.createGain();
-          const noteStart = startTime + index * noteLength;
-          oscillator.type = "sine";
-          oscillator.frequency.setValueAtTime(frequency, noteStart);
-          gainNode.gain.setValueAtTime(0.001, noteStart);
-          gainNode.gain.exponentialRampToValueAtTime(0.12, noteStart + 0.025);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, noteStart + noteLength);
-          oscillator.connect(gainNode);
-          gainNode.connect(context.destination);
-          oscillator.start(noteStart);
-          oscillator.stop(noteStart + noteLength);
-        });
-      } catch (error) {
-        // Audio may be unavailable in the current browser context.
-      }
-    }
-
-    function toggleMusic() {
-      const button = document.getElementById("music-button");
-      if (musicNodes.length > 0) {
-        musicNodes.forEach((node) => node.stop());
-        musicNodes = [];
-        clearInterval(musicTimer);
-        musicTimer = null;
-        button.textContent = "🎵";
-        button.setAttribute("aria-pressed", "false");
-        button.setAttribute("aria-label", "Start ambient music");
-        localStorage.setItem("dailyBoostMusic", "false");
-        return;
-      }
-
-      try {
-        const context = getAudioContext();
-        if (!context) return;
-        const masterGain = context.createGain();
-        masterGain.gain.value = 0.035;
-        masterGain.connect(context.destination);
-
-        [261.63, 329.63, 392].forEach((frequency) => {
-          const oscillator = context.createOscillator();
-          oscillator.type = "sine";
-          oscillator.frequency.value = frequency;
-          oscillator.connect(masterGain);
-          oscillator.start();
-          musicNodes.push(oscillator);
-        });
-
-        musicTimer = setInterval(() => {
-          const nextNote = 261.63 + Math.floor(Math.random() * 5) * 65.41;
-          musicNodes[0].frequency.setTargetAtTime(nextNote, context.currentTime, 0.8);
-        }, 3500);
-        button.textContent = "⏸️";
-        button.setAttribute("aria-pressed", "true");
-        button.setAttribute("aria-label", "Stop ambient music");
-        localStorage.setItem("dailyBoostMusic", "true");
-      } catch (error) {
-        // Audio may be unavailable in the current browser context.
-      }
-    }
-
     function fireConfetti() {
       if (typeof confetti !== "function") return;
 
@@ -455,7 +340,6 @@
       emojiBox.textContent = compliments[randomIndex].emoji;
       textBox.classList.add("fade-in");
       emojiBox.classList.add("bounce-emoji");
-      playPopSound();
       fireConfetti();
     }
 
@@ -482,19 +366,6 @@
         document.body.classList.add(`theme-${button.dataset.theme}`);
       });
     });
-
-    document.getElementById("mute-button").addEventListener("click", (event) => {
-      soundMuted = !soundMuted;
-      localStorage.setItem("dailyBoostMuted", String(soundMuted));
-      event.currentTarget.textContent = soundMuted ? "🔇" : "🔊";
-      event.currentTarget.setAttribute("aria-pressed", String(soundMuted));
-      event.currentTarget.setAttribute("aria-label", soundMuted ? "Turn sound on" : "Turn sound off");
-    });
-
-    document.getElementById("mute-button").textContent = soundMuted ? "🔇" : "🔊";
-    document.getElementById("mute-button").setAttribute("aria-pressed", String(soundMuted));
-    document.getElementById("music-button").addEventListener("click", toggleMusic);
-    document.getElementById("uplift-button").addEventListener("click", playUpliftingSong);
 
     document.getElementById("compliment-button").addEventListener("click", triggerMagic);
   </script>

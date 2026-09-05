@@ -166,27 +166,132 @@
   </main>
 
   <script>
+    function createCompliments(starters, endings, emojis) {
+      return starters.flatMap((starter, starterIndex) =>
+        endings.map((ending, endingIndex) => ({
+          text: `${starter} ${ending}`,
+          emoji: emojis[(starterIndex + endingIndex) % emojis.length]
+        }))
+      );
+    }
+
+    const complimentEndings = [
+      "and that is more than enough for today.",
+      "so give yourself credit for being here.",
+      "and your presence makes a real difference.",
+      "because progress can be wonderfully small.",
+      "and someone is lucky to know you."
+    ];
+
     const complimentsByMood = {
-      tired: [
-        { text: "You are allowed to take it one tiny, cozy step at a time.", emoji: "🛌" },
-        { text: "Even your slow days are still moving you forward.", emoji: "🐢" },
-        { text: "You have survived every difficult day before this one.", emoji: "🌤️" }
-      ],
-      happy: [
-        { text: "Your good mood is so contagious, Wi-Fi is trying to catch it.", emoji: "📶" },
-        { text: "You are basically a walking confetti cannon of joy.", emoji: "🎉" },
-        { text: "Your laugh makes ordinary moments feel legendary.", emoji: "😂" }
-      ],
-      brave: [
-        { text: "You have the kind of courage that makes dragons check their calendars.", emoji: "🐉" },
-        { text: "You do not need to feel fearless to be incredibly brave.", emoji: "🛡️" },
-        { text: "The next chapter is lucky to have you as its main character.", emoji: "📖" }
-      ],
-      sad: [
-        { text: "You do not have to carry everything alone; you deserve care and kindness too.", emoji: "🫶" },
-        { text: "This feeling is heavy, but it is not forever. Be gentle with yourself today.", emoji: "🌈" },
-        { text: "Even on cloudy days, there is still something bright about you.", emoji: "☁️" }
-      ]
+      tired: createCompliments([
+        "You are allowed to move at your own pace",
+        "Your rest is productive in its own quiet way",
+        "You make hard things look gentler",
+        "Your best today can be beautifully simple",
+        "You deserve a soft place to land",
+        "Your steady effort counts",
+        "You have permission to pause",
+        "You bring warmth even on low-energy days",
+        "Your patience with yourself is a strength",
+        "You are doing better than your tired brain says",
+        "A tiny step from you is still a victory",
+        "You have already made it through so much",
+        "Your calm persistence is quietly powerful",
+        "You are worth caring for",
+        "Your needs matter",
+        "You can start again whenever you are ready",
+        "Your gentle energy is a gift",
+        "You do not need to rush your life",
+        "You are allowed to choose the easier option",
+        "Your quiet resilience shines",
+        "You bring enough exactly as you are",
+        "You can take this moment one breath at a time",
+        "Your body deserves kindness",
+        "You are still growing during restful seasons",
+        "You make room for better days"
+      ], complimentEndings, ["🛌", "🐢", "🌤️", "☕", "🧸"]),
+      happy: createCompliments([
+        "Your joy lights up every room",
+        "Your laugh makes ordinary moments legendary",
+        "You are a walking burst of sunshine",
+        "Your good mood is wonderfully contagious",
+        "You make celebration look effortless",
+        "Your enthusiasm gives ideas wings",
+        "You turn little wins into big memories",
+        "Your smile is a renewable energy source",
+        "You bring sparkle to the everyday",
+        "Your optimism is seriously impressive",
+        "You make people feel welcome",
+        "Your playful spirit is unforgettable",
+        "You are basically human confetti",
+        "Your excitement makes everything more fun",
+        "You notice the good in beautiful ways",
+        "Your energy could power a small city",
+        "You make happiness feel shareable",
+        "Your delight is a superpower",
+        "You are proof that good vibes work",
+        "Your bright perspective is refreshing",
+        "You make simple moments shine",
+        "Your joy has excellent timing",
+        "You bring a celebration wherever you go",
+        "Your happiness looks great on you",
+        "You make today more colorful"
+      ], complimentEndings, ["📶", "🎉", "😂", "🌈", "✨"]),
+      brave: createCompliments([
+        "Your courage makes dragons check their calendars",
+        "You keep showing up with a strong heart",
+        "You face uncertainty with impressive grace",
+        "Your bold ideas deserve room to grow",
+        "You are stronger than the obstacle in front of you",
+        "You turn fear into forward motion",
+        "Your honesty takes real courage",
+        "You protect what matters with fierce kindness",
+        "You are willing to try, and that is powerful",
+        "Your resilience has main-character energy",
+        "You make hard choices with a thoughtful heart",
+        "You are learning to trust yourself",
+        "Your bravery inspires people around you",
+        "You can handle more than you realize",
+        "You speak up when it counts",
+        "Your determination is impossible to ignore",
+        "You turn setbacks into plot twists",
+        "You are courageous enough to begin",
+        "Your boundaries are brave and healthy",
+        "You keep your heart open through challenges",
+        "You are a tiny bit unstoppable",
+        "Your next chapter is lucky to have you",
+        "You make room for growth",
+        "Your courage does not need an audience",
+        "You are already becoming your own hero"
+      ], complimentEndings, ["🐉", "🛡️", "📖", "🦁", "🔥"]),
+      sad: createCompliments([
+        "You deserve tenderness on the difficult days",
+        "Your feelings are allowed to take up space",
+        "You do not have to carry everything alone",
+        "There is still something bright about you",
+        "You are worthy of care exactly as you are",
+        "It is okay to need a little extra kindness",
+        "Your heart is doing its best",
+        "You can be honest about having a hard day",
+        "This feeling is heavy, but it is not forever",
+        "You are not a burden for needing support",
+        "Your tears do not make you weak",
+        "You are allowed to take comfort wherever you find it",
+        "Healing does not have to happen all at once",
+        "You are more than this difficult moment",
+        "Someone would be glad to sit beside you",
+        "Your softness is not a flaw",
+        "You can let today be imperfect",
+        "You still matter when you feel disconnected",
+        "There is no wrong way to recover",
+        "You deserve the same compassion you give others",
+        "A better moment can arrive quietly",
+        "You can ask for help without apologizing",
+        "Your story has gentler chapters ahead",
+        "You are held by more love than you can see",
+        "You do not have to pretend to be okay"
+      ], complimentEndings, ["🫶", "🌈", "☁️", "🌱", "💛"])
     };
 
     const modeMessages = {

@@ -38,6 +38,71 @@
     .theme-ocean { background: linear-gradient(135deg, #dbeafe, #cffafe, #ccfbf1); }
     .theme-sunset { background: linear-gradient(135deg, #ffedd5, #fce7f3, #fef3c7); }
     .theme-space { background: linear-gradient(135deg, #1e1b4b, #312e81, #581c87); }
+    .theme-candy { background: linear-gradient(135deg, #fce7f3, #fef3c7, #e9d5ff); }
+    .theme-candy #theme-backdrop {
+      background:
+        radial-gradient(ellipse at 18% 24%, #f43f5e 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 30% 72%, #22c55e 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 74% 28%, #f59e0b 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 86% 76%, #3b82f6 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 53% 54%, #a855f7 0 2.5%, transparent 3%);
+      background-size: 180px 150px, 220px 190px, 240px 180px, 200px 170px, 260px 210px;
+      opacity: .22;
+    }
+    .theme-candy #theme-backdrop::after {
+      content: "🍬  🟢  🔴  🟡  🔵  🍬  🟣";
+      position: absolute;
+      inset: 8% 0 auto;
+      color: rgba(190, 24, 93, .3);
+      font-size: clamp(2rem, 7vw, 4rem);
+      letter-spacing: .7rem;
+      text-align: center;
+      filter: saturate(1.4);
+    }
+    .theme-ocean #theme-backdrop {
+      background:
+        radial-gradient(ellipse at 20% 75%, rgba(255,255,255,.8) 0 8%, transparent 8.5%),
+        radial-gradient(ellipse at 75% 86%, rgba(255,255,255,.55) 0 12%, transparent 12.5%),
+        linear-gradient(170deg, transparent 55%, rgba(14,165,233,.45) 55% 64%, transparent 64%),
+        linear-gradient(10deg, #0284c7 0 25%, #38bdf8 25% 43%, #bae6fd 43% 58%, transparent 58%);
+      opacity: .75;
+    }
+    .theme-sunset #theme-backdrop {
+      background:
+        radial-gradient(circle at 72% 42%, #fde047 0 7%, rgba(251,146,60,.7) 7.5% 14%, transparent 14.5%),
+        linear-gradient(180deg, #7c3aed 0, #db2777 38%, #fb923c 66%, #facc15 67%, #7c2d12 68% 100%);
+      opacity: .7;
+    }
+    .theme-space #theme-backdrop {
+      background:
+        radial-gradient(circle at 18% 25%, white 0 1px, transparent 2px),
+        radial-gradient(circle at 72% 18%, #c4b5fd 0 1px, transparent 2px),
+        radial-gradient(circle at 87% 65%, white 0 1px, transparent 2px),
+        radial-gradient(circle at 40% 78%, #ddd6fe 0 1px, transparent 2px),
+        radial-gradient(circle at 62% 48%, white 0 1px, transparent 2px),
+        radial-gradient(circle at 50% 55%, #312e81 0 9%, transparent 9.5%),
+        linear-gradient(135deg, #020617, #1e1b4b 50%, #581c87);
+      background-size: auto, auto, auto, auto, auto, auto, cover;
+      opacity: .9;
+    }
+    .theme-space #theme-backdrop::after {
+      content: "";
+      position: absolute;
+      width: 12rem;
+      height: 12rem;
+      right: 10%;
+      top: 12%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f5f3ff 0 3%, #a78bfa 30%, #4c1d95 72%, transparent 73%);
+      box-shadow: 0 0 50px rgba(167,139,250,.45);
+    }
+    #theme-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity .4s ease, background .4s ease;
+    }
     .theme-space main { background-color: rgba(30, 27, 75, 0.82); border-color: rgba(255, 255, 255, 0.2); }
     .theme-space h1, .theme-space p { color: #f5f3ff; }
     .reduce-motion *, .reduce-motion *::before, .reduce-motion *::after {
@@ -48,7 +113,8 @@
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="theme-candy bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+  <div id="theme-backdrop" aria-hidden="true"></div>
   <div id="decoration-1" class="decoration absolute top-10 left-10 text-6xl float-slow opacity-60 select-none" aria-hidden="true">🌿</div>
   <div id="decoration-2" class="decoration absolute bottom-12 right-16 text-6xl float-fast opacity-60 select-none" aria-hidden="true">🍵</div>
   <div id="decoration-3" class="decoration absolute top-1/4 right-10 text-5xl float-slow opacity-50 select-none" style="animation-delay: 1s;" aria-hidden="true">☀️</div>
@@ -61,7 +127,7 @@
     <p class="text-sm text-gray-500 mb-5">Choose your mood, then get a boost made for you.</p>
 
     <div class="flex flex-wrap justify-center gap-2 mb-4" role="group" aria-label="Choose a theme">
-      <button type="button" data-theme="default" class="theme-button rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-800">Candy</button>
+      <button type="button" data-theme="candy" class="theme-button rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-800">Candy</button>
       <button type="button" data-theme="ocean" class="theme-button rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-800">Ocean</button>
       <button type="button" data-theme="sunset" class="theme-button rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">Sunset</button>
       <button type="button" data-theme="space" class="theme-button rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800">Space</button>
@@ -265,7 +331,7 @@
     document.querySelectorAll(".theme-button").forEach((button) => {
       button.addEventListener("click", () => {
         document.body.className = document.body.className.replace(/\btheme-\w+/g, "");
-        if (button.dataset.theme !== "default") document.body.classList.add(`theme-${button.dataset.theme}`);
+        document.body.classList.add(`theme-${button.dataset.theme}`);
       });
     });
 

@@ -1,17 +1,22 @@
-# Daily Boost
+# Will you?
 
-Daily Boost is a playful, browser-based compliment and encouragement app. Choose how you feel, select a boost mode, and receive a personalized message with animated feedback and confetti.
+A cute, shareable date-planning game for a crush: answer five low-pressure questions about an ideal day, then get a playful personality result and a personalized date card.
 
 ## Features
 
-- Four moods: Tired, Happy, Brave, and Sad
-- Exactly 500 mood-based compliments, split evenly at 125 per mood
-- Boost modes for compliments, affirmations, silly jokes, tiny challenges, and calm moments
-- Candy, Ocean, Sunset, and Space visual themes
-- Animated compliment and emoji transitions
-- Confetti celebration with an optional browser-generated chime
-- Responsive layout for desktop and mobile screens
-- No build process or backend required
+- A single, self-contained HTML page with no build process or external services
+- Responsive layout for phones, tablets, and desktops
+- Keyboard-friendly controls, visible focus states, semantic labels, and reduced-motion support
+- An invitation first, followed by a single date-planner screen with combined activity and food/drink choices, plus day of the week, time of day, vibe, meeting place, and conversation
+- A polished planner layout with a submit button that activates after every date preference is selected
+- A centered final planner step places a clear “Reveal our date plan” action directly at the bottom of the question list
+- A dedicated sharing section at the end of the submitted date card
+- Three playful personality results: Cozy Spark, Curious Comet, and Daydream Explorer
+- A personalized ideal-date card with a gentle invitation
+- A clear no-thank-you option that ends with a respectful, no-pressure response
+- Native share, copy, and email actions for sending the result; email drafts accept a recipient address, while copy remains available when browser or device sharing is unavailable
+- A soft inline SVG Cupid illustration in the background with a reduced-motion-friendly wing animation
+- Soft romantic colors, handwritten-style note treatment, and lightweight CSS animation
 
 ## Getting started
 
@@ -30,32 +35,19 @@ python -m http.server 8000
 
 Then visit <http://localhost:8000>.
 
-## How to use
-
-1. Choose a mood.
-2. Select a theme and boost mode.
-3. Click **Give Me a Compliment**.
-4. Enjoy the message and confetti celebration.
-
-The page uses browser storage for small interface preferences where applicable. Audio features may require the first interaction with the page because of browser autoplay rules.
-
 ## Technologies
 
 - HTML5
-- Tailwind CSS via CDN
 - Vanilla JavaScript
-- Canvas Confetti
-- Web Audio API
 
 ## Customization
 
 The app is intentionally contained in `index.html`. To customize it:
 
-- Add or edit mood content in `complimentsByMood`.
-- Update alternate messages in `modeMessages`.
-- Change colors and layouts with Tailwind utility classes.
-- Adjust animations in the `<style>` section.
-- Modify theme backdrops in the theme-specific CSS rules.
+- Edit the copy in the `<h1>`, intro, questions, answers, and result messages.
+- Add or remove questions by changing the `questions` array near the bottom of the file.
+- Change the final date-card wording in `showResult()`.
+- Adjust the color variables and layout rules in the `<style>` section.
 
 ## License
 

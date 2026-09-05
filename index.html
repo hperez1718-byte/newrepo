@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Boost</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .float-slow { animation: float 6s ease-in-out infinite; }
+    .float-fast { animation: float 4s ease-in-out infinite; }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .bounce-emoji {
+      animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .theme-ocean { background: linear-gradient(135deg, #dbeafe, #cffafe, #ccfbf1); }
+    .theme-sunset { background: linear-gradient(135deg, #ffedd5, #fce7f3, #fef3c7); }
+    .theme-space { background: linear-gradient(135deg, #1e1b4b, #312e81, #581c87); }
+    .theme-candy { background: linear-gradient(135deg, #fce7f3, #fef3c7, #e9d5ff); }
+    .theme-candy #theme-backdrop {
+      background:
+        radial-gradient(ellipse at 18% 24%, #f43f5e 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 30% 72%, #22c55e 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 74% 28%, #f59e0b 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 86% 76%, #3b82f6 0 2.5%, transparent 3%),
+        radial-gradient(ellipse at 53% 54%, #a855f7 0 2.5%, transparent 3%);
+      background-size: 180px 150px, 220px 190px, 240px 180px, 200px 170px, 260px 210px;
+      opacity: .22;
+    }
+    .theme-candy #theme-backdrop::after {
+      content: "🍬  🟢  🔴  🟡  🔵  🍬  🟣";
+      position: absolute;
+      inset: 8% 0 auto;
+      color: rgba(190, 24, 93, .3);
+      font-size: clamp(2rem, 7vw, 4rem);
+      letter-spacing: .7rem;
+      text-align: center;
+      filter: saturate(1.4);
+    }
+    .theme-ocean #theme-backdrop {
+      background:
+        radial-gradient(ellipse at 20% 75%, rgba(255,255,255,.8) 0 8%, transparent 8.5%),
+        radial-gradient(ellipse at 75% 86%, rgba(255,255,255,.55) 0 12%, transparent 12.5%),
+        linear-gradient(170deg, transparent 55%, rgba(14,165,233,.45) 55% 64%, transparent 64%),
+        linear-gradient(10deg, #0284c7 0 25%, #38bdf8 25% 43%, #bae6fd 43% 58%, transparent 58%);
+      opacity: .75;
+    }
+    .theme-sunset #theme-backdrop {
+      background:
+        radial-gradient(circle at 72% 42%, #fde047 0 7%, rgba(251,146,60,.7) 7.5% 14%, transparent 14.5%),
+        linear-gradient(180deg, #7c3aed 0, #db2777 38%, #fb923c 66%, #facc15 67%, #7c2d12 68% 100%);
+      opacity: .7;
+    }
+    .theme-space #theme-backdrop {
+      background:
+        radial-gradient(circle at 18% 25%, white 0 1px, transparent 2px),
+        radial-gradient(circle at 72% 18%, #c4b5fd 0 1px, transparent 2px),
+        radial-gradient(circle at 87% 65%, white 0 1px, transparent 2px),
+        radial-gradient(circle at 40% 78%, #ddd6fe 0 1px, transparent 2px),
+        radial-gradient(circle at 62% 48%, white 0 1px, transparent 2px),
+        radial-gradient(circle at 50% 55%, #312e81 0 9%, transparent 9.5%),
+        linear-gradient(135deg, #020617, #1e1b4b 50%, #581c87);
+      background-size: auto, auto, auto, auto, auto, auto, cover;
+      opacity: .9;
+    }
+    .theme-space #theme-backdrop::after {
+      content: "";
+      position: absolute;
+      width: 12rem;
+      height: 12rem;
+      right: 10%;
+      top: 12%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f5f3ff 0 3%, #a78bfa 30%, #4c1d95 72%, transparent 73%);
+      box-shadow: 0 0 50px rgba(167,139,250,.45);
+    }
+    #theme-backdrop {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity .4s ease, background .4s ease;
+    }
+    .theme-space main { background-color: rgba(30, 27, 75, 0.82); border-color: rgba(255, 255, 255, 0.2); }
+    .theme-space h1, .theme-space p { color: #f5f3ff; }
+    #compliment-text { color: #000000 !important; }
+    .theme-space #compliment-text { color: #000000 !important; }
+  </style>
+</head>
+<body class="theme-candy bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+  <div id="theme-backdrop" aria-hidden="true"></div>
+
+  <main class="bg-white/85 backdrop-blur-md shadow-xl rounded-2xl p-8 max-w-md w-full text-center border border-white relative z-10">
+    <div id="emoji-icon" class="text-5xl mb-3 bounce-emoji select-none" aria-live="polite">✨</div>
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">Daily Boost</h1>
+    <p class="text-sm text-gray-500 mb-5">Choose your mood, then get a boost made for you.</p>
+
+    <div class="flex flex-wrap justify-center gap-2 mb-4" role="group" aria-label="Choose a theme">
+      <button type="button" data-theme="candy" class="theme-button rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-800">Candy</button>
+      <button type="button" data-theme="ocean" class="theme-button rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-800">Ocean</button>
+      <button type="button" data-theme="sunset" class="theme-button rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">Sunset</button>
+      <button type="button" data-theme="space" class="theme-button rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800">Space</button>
+    </div>
+
+    <div class="flex items-center gap-2 mb-5">
+      <label for="boost-mode" class="sr-only">Boost mode</label>
+      <select id="boost-mode" class="flex-1 rounded-lg border border-purple-200 bg-white px-3 py-2 text-sm text-gray-700">
+        <option value="compliment">Compliment mode</option>
+        <option value="affirmation">Affirmation mode</option>
+        <option value="joke">Silly joke mode</option>
+        <option value="challenge">Tiny challenge mode</option>
+        <option value="calm">Calm moment mode</option>
+      </select>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6" role="group" aria-label="Choose your mood">
+      <button type="button" data-mood="tired" class="mood-button rounded-lg border border-purple-200 bg-purple-50 px-2 py-2 text-sm font-medium text-purple-800 transition hover:bg-purple-100" aria-pressed="true">😴 Tired</button>
+      <button type="button" data-mood="happy" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-yellow-50" aria-pressed="false">😄 Happy</button>
+      <button type="button" data-mood="brave" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-blue-50" aria-pressed="false">🦁 Brave</button>
+      <button type="button" data-mood="sad" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-blue-50" aria-pressed="false">🥺 Sad</button>
+    </div>
+
+    <div class="min-h-[100px] flex items-center justify-center bg-purple-50 rounded-xl p-4 mb-6 border border-purple-100 shadow-inner">
+      <p id="compliment-text" class="text-lg font-medium text-purple-900 fade-in" aria-live="polite">
+        Click the button to get your first compliment!
+      </p>
+    </div>
+
+    <button id="compliment-button" type="button" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform active:scale-95 transition-all duration-150 cursor-pointer">
+      Give Me a Compliment 🚀
+    </button>
+  </main>
+
+  <script>
+    function createCompliments(starters, endings, emojis) {
+      return starters.flatMap((starter, starterIndex) =>
+        endings.map((ending, endingIndex) => ({
+          text: `${starter} ${ending}`,
+          emoji: emojis[(starterIndex + endingIndex) % emojis.length]
+        }))
+      );
+    }
+
+    const complimentEndings = [
+      "and that is more than enough for today.",
+      "so give yourself credit for being here.",
+      "and your presence makes a real difference.",
+      "because progress can be wonderfully small.",
+      "and someone is lucky to know you."
+    ];
+
+    const complimentsByMood = {
+      tired: createCompliments([
+        "You are allowed to move at your own pace",
+        "Your rest is productive in its own quiet way",
+        "You make hard things look gentler",
+        "Your best today can be beautifully simple",
+        "You deserve a soft place to land",
+        "Your steady effort counts",
+        "You have permission to pause",
+        "You bring warmth even on low-energy days",
+        "Your patience with yourself is a strength",
+        "You are doing better than your tired brain says",
+        "A tiny step from you is still a victory",
+        "You have already made it through so much",
+        "Your calm persistence is quietly powerful",
+        "You are worth caring for",
+        "Your needs matter",
+        "You can start again whenever you are ready",
+        "Your gentle energy is a gift",
+        "You do not need to rush your life",
+        "You are allowed to choose the easier option",
+        "Your quiet resilience shines",
+        "You bring enough exactly as you are",
+        "You can take this moment one breath at a time",
+        "Your body deserves kindness",
+        "You are still growing during restful seasons",
+        "You make room for better days"
+      ], complimentEndings, ["🛌", "🐢", "🌤️", "☕", "🧸"]),
+      happy: createCompliments([
+        "Your joy lights up every room",
+        "Your laugh makes ordinary moments legendary",
+        "You are a walking burst of sunshine",
+        "Your good mood is wonderfully contagious",
+        "You make celebration look effortless",
+        "Your enthusiasm gives ideas wings",
+        "You turn little wins into big memories",
+        "Your smile is a renewable energy source",
+        "You bring sparkle to the everyday",
+        "Your optimism is seriously impressive",
+        "You make people feel welcome",
+        "Your playful spirit is unforgettable",
+        "You are basically human confetti",
+        "Your excitement makes everything more fun",
+        "You notice the good in beautiful ways",
+        "Your energy could power a small city",
+        "You make happiness feel shareable",
+        "Your delight is a superpower",
+        "You are proof that good vibes work",
+        "Your bright perspective is refreshing",
+        "You make simple moments shine",
+        "Your joy has excellent timing",
+        "You bring a celebration wherever you go",
+        "Your happiness looks great on you",
+        "You make today more colorful"
+      ], complimentEndings, ["📶", "🎉", "😂", "🌈", "✨"]),
+      brave: createCompliments([
+        "Your courage makes dragons check their calendars",
+        "You keep showing up with a strong heart",
+        "You face uncertainty with impressive grace",
+        "Your bold ideas deserve room to grow",
+        "You are stronger than the obstacle in front of you",
+        "You turn fear into forward motion",
+        "Your honesty takes real courage",
+        "You protect what matters with fierce kindness",
+        "You are willing to try, and that is powerful",
+        "Your resilience has main-character energy",
+        "You make hard choices with a thoughtful heart",
+        "You are learning to trust yourself",
+        "Your bravery inspires people around you",
+        "You can handle more than you realize",
+        "You speak up when it counts",
+        "Your determination is impossible to ignore",
+        "You turn setbacks into plot twists",
+        "You are courageous enough to begin",
+        "Your boundaries are brave and healthy",
+        "You keep your heart open through challenges",
+        "You are a tiny bit unstoppable",
+        "Your next chapter is lucky to have you",
+        "You make room for growth",
+        "Your courage does not need an audience",
+        "You are already becoming your own hero"
+      ], complimentEndings, ["🐉", "🛡️", "📖", "🦁", "🔥"]),
+      sad: createCompliments([
+        "You deserve tenderness on the difficult days",
+        "Your feelings are allowed to take up space",
+        "You do not have to carry everything alone",
+        "There is still something bright about you",
+        "You are worthy of care exactly as you are",
+        "It is okay to need a little extra kindness",
+        "Your heart is doing its best",
+        "You can be honest about having a hard day",
+        "This feeling is heavy, but it is not forever",
+        "You are not a burden for needing support",
+        "Your tears do not make you weak",
+        "You are allowed to take comfort wherever you find it",
+        "Healing does not have to happen all at once",
+        "You are more than this difficult moment",
+        "Someone would be glad to sit beside you",
+        "Your softness is not a flaw",
+        "You can let today be imperfect",
+        "You still matter when you feel disconnected",
+        "There is no wrong way to recover",
+        "You deserve the same compassion you give others",
+        "A better moment can arrive quietly",
+        "You can ask for help without apologizing",
+        "Your story has gentler chapters ahead",
+        "You are held by more love than you can see",
+        "You do not have to pretend to be okay"
+      ], complimentEndings, ["🫶", "🌈", "☁️", "🌱", "💛"])
+    };
+
+    const modeMessages = {
+      affirmation: [
+        { text: "You are becoming someone your future self will be proud of.", emoji: "🌱" },
+        { text: "You bring value simply by being exactly who you are.", emoji: "💎" },
+        { text: "You can take up space, take your time, and trust your pace.", emoji: "🌟" }
+      ],
+      joke: [
+        { text: "You are nacho average human. (Sorry, we had to.)", emoji: "🧀" },
+        { text: "You are doing great. Please accept this official internet cookie.", emoji: "🍪" },
+        { text: "Your vibe is so good, even your browser tabs feel organized.", emoji: "🖥️" }
+      ],
+      challenge: [
+        { text: "Take one sip of water and do one tiny thing future-you will thank you for.", emoji: "💧" },
+        { text: "Send someone a kind message before this boost ends.", emoji: "💌" },
+        { text: "Stretch your shoulders, take a breath, and celebrate showing up.", emoji: "🙆" }
+      ],
+      calm: [
+        { text: "Inhale for four, exhale for six. You are safe to slow down.", emoji: "🌬️" },
+        { text: "Notice three things you can see, two you can hear, and one you can feel.", emoji: "🪷" },
+        { text: "Nothing needs to be solved in this exact minute.", emoji: "🕯️" }
+      ]
+    };
+
+    let selectedMood = "tired";
+    let lastIndex = -1;
+
+    function playConfettiSound() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      const context = new AudioContext();
+      const gainNode = context.createGain();
+      const oscillator = context.createOscillator();
+      const startTime = context.currentTime;
+
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(523.25, startTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1046.5, startTime + 0.16);
+      gainNode.gain.setValueAtTime(0.001, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.18, startTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+      oscillator.start(startTime);
+      oscillator.stop(startTime + 0.3);
+    }
+
+    function fireConfetti() {
+      if (typeof confetti !== "function") return;
+
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: ["#a855f7", "#ec4899", "#3b82f6", "#eab308"]
+      });
+      playConfettiSound();
+    }
+
+    function triggerMagic(surpriseIndex = null) {
+      const textBox = document.getElementById("compliment-text");
+      const emojiBox = document.getElementById("emoji-icon");
+      const mode = document.getElementById("boost-mode").value;
+      const compliments = mode === "compliment" ? complimentsByMood[selectedMood] : modeMessages[mode];
+      let randomIndex = surpriseIndex;
+      if (!Number.isInteger(randomIndex) || randomIndex < 0 || randomIndex >= compliments.length) {
+        do {
+          randomIndex = Math.floor(Math.random() * compliments.length);
+        } while (randomIndex === lastIndex && compliments.length > 1);
+      }
+
+      lastIndex = randomIndex;
+      textBox.classList.remove("fade-in");
+      emojiBox.classList.remove("bounce-emoji");
+      void textBox.offsetWidth;
+      void emojiBox.offsetWidth;
+
+      textBox.textContent = compliments[randomIndex].text;
+      emojiBox.textContent = compliments[randomIndex].emoji;
+      textBox.classList.add("fade-in");
+      emojiBox.classList.add("bounce-emoji");
+      fireConfetti();
+    }
+
+    document.querySelectorAll(".mood-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedMood = button.dataset.mood;
+        lastIndex = -1;
+        document.querySelectorAll(".mood-button").forEach((moodButton) => {
+          const isSelected = moodButton === button;
+          moodButton.setAttribute("aria-pressed", String(isSelected));
+          moodButton.classList.toggle("border-purple-200", isSelected);
+          moodButton.classList.toggle("bg-purple-50", isSelected);
+          moodButton.classList.toggle("text-purple-800", isSelected);
+          moodButton.classList.toggle("border-transparent", !isSelected);
+          moodButton.classList.toggle("bg-gray-50", !isSelected);
+          moodButton.classList.toggle("text-gray-600", !isSelected);
+        });
+      });
+    });
+
+    document.querySelectorAll(".theme-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.body.className = document.body.className.replace(/\btheme-\w+/g, "");
+        document.body.classList.add(`theme-${button.dataset.theme}`);
+      });
+    });
+
+    document.getElementById("compliment-button").addEventListener("click", triggerMagic);
+  </script>
+</body>
+</html>

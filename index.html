@@ -307,6 +307,28 @@
 
     let selectedMood = "tired";
     let lastIndex = -1;
+
+    function playConfettiSound() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+
+      const context = new AudioContext();
+      const gainNode = context.createGain();
+      const oscillator = context.createOscillator();
+      const startTime = context.currentTime;
+
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(523.25, startTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1046.5, startTime + 0.16);
+      gainNode.gain.setValueAtTime(0.001, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.18, startTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+      oscillator.connect(gainNode);
+      gainNode.connect(context.destination);
+      oscillator.start(startTime);
+      oscillator.stop(startTime + 0.3);
+    }
+
     function fireConfetti() {
       if (typeof confetti !== "function") return;
 
@@ -316,6 +338,7 @@
         origin: { y: 0.7 },
         colors: ["#a855f7", "#ec4899", "#3b82f6", "#eab308"]
       });
+      playConfettiSound();
     }
 
     function triggerMagic(surpriseIndex = null) {

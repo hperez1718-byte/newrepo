@@ -48,10 +48,11 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Daily Boost</h1>
     <p class="text-sm text-gray-500 mb-5">Choose your mood, then get a boost made for you.</p>
 
-    <div class="grid grid-cols-3 gap-2 mb-6" role="group" aria-label="Choose your mood">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6" role="group" aria-label="Choose your mood">
       <button type="button" data-mood="tired" class="mood-button rounded-lg border border-purple-200 bg-purple-50 px-2 py-2 text-sm font-medium text-purple-800 transition hover:bg-purple-100" aria-pressed="true">😴 Tired</button>
       <button type="button" data-mood="happy" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-yellow-50" aria-pressed="false">😄 Happy</button>
       <button type="button" data-mood="brave" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-blue-50" aria-pressed="false">🦁 Brave</button>
+      <button type="button" data-mood="sad" class="mood-button rounded-lg border border-transparent bg-gray-50 px-2 py-2 text-sm font-medium text-gray-600 transition hover:bg-blue-50" aria-pressed="false">🥺 Sad</button>
     </div>
 
     <div class="min-h-[100px] flex items-center justify-center bg-purple-50 rounded-xl p-4 mb-6 border border-purple-100 shadow-inner">
@@ -81,6 +82,11 @@
         { text: "You have the kind of courage that makes dragons check their calendars.", emoji: "🐉" },
         { text: "You do not need to feel fearless to be incredibly brave.", emoji: "🛡️" },
         { text: "The next chapter is lucky to have you as its main character.", emoji: "📖" }
+      ],
+      sad: [
+        { text: "You do not have to carry everything alone; you deserve care and kindness too.", emoji: "🫶" },
+        { text: "This feeling is heavy, but it is not forever. Be gentle with yourself today.", emoji: "🌈" },
+        { text: "Even on cloudy days, there is still something bright about you.", emoji: "☁️" }
       ]
     };
 

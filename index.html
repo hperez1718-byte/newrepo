@@ -115,11 +115,6 @@
 </head>
 <body class="theme-candy bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
   <div id="theme-backdrop" aria-hidden="true"></div>
-  <div id="decoration-1" class="decoration absolute top-10 left-10 text-6xl float-slow opacity-60 select-none" aria-hidden="true">🌿</div>
-  <div id="decoration-2" class="decoration absolute bottom-12 right-16 text-6xl float-fast opacity-60 select-none" aria-hidden="true">🍵</div>
-  <div id="decoration-3" class="decoration absolute top-1/4 right-10 text-5xl float-slow opacity-50 select-none" style="animation-delay: 1s;" aria-hidden="true">☀️</div>
-  <div id="decoration-4" class="decoration absolute bottom-1/3 left-12 text-5xl float-fast opacity-50 select-none" style="animation-delay: 2s;" aria-hidden="true">🎈</div>
-  <div id="decoration-5" class="decoration absolute top-12 right-1/3 text-4xl float-slow opacity-40 select-none" style="animation-delay: 1.5s;" aria-hidden="true">☁️</div>
 
   <main class="bg-white/85 backdrop-blur-md shadow-xl rounded-2xl p-8 max-w-md w-full text-center border border-white relative z-10">
     <div id="emoji-icon" class="text-5xl mb-3 bounce-emoji select-none" aria-live="polite">✨</div>
@@ -131,17 +126,6 @@
       <button type="button" data-theme="ocean" class="theme-button rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-800">Ocean</button>
       <button type="button" data-theme="sunset" class="theme-button rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">Sunset</button>
       <button type="button" data-theme="space" class="theme-button rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800">Space</button>
-    </div>
-
-    <div class="flex items-center gap-2 mb-5">
-      <label for="decoration-select" class="whitespace-nowrap text-xs font-semibold text-gray-500">Floating icons</label>
-      <select id="decoration-select" class="min-w-0 flex-1 rounded-lg border border-purple-200 bg-white px-3 py-2 text-sm text-gray-700">
-        <option value="nature">Nature</option>
-        <option value="space">Space</option>
-        <option value="food">Food</option>
-        <option value="celebrate">Celebrate</option>
-        <option value="minimal">Minimal</option>
-      </select>
     </div>
 
     <div class="flex items-center gap-2 mb-5">
@@ -224,14 +208,6 @@
         { text: "Notice three things you can see, two you can hear, and one you can feel.", emoji: "🪷" },
         { text: "Nothing needs to be solved in this exact minute.", emoji: "🕯️" }
       ]
-    };
-
-    const decorationSets = {
-      nature: ["🌿", "🍵", "☀️", "🎈", "☁️"],
-      space: ["🪐", "🌙", "⭐", "🚀", "🌌"],
-      food: ["🍕", "🍩", "🍓", "🍔", "🍪"],
-      celebrate: ["🎉", "🎊", "✨", "🎈", "🎁"],
-      minimal: ["•", "○", "✦", "·", "◇"]
     };
 
     let selectedMood = "tired";
@@ -335,14 +311,6 @@
       });
     });
 
-    document.getElementById("decoration-select").addEventListener("change", (event) => {
-      const decorations = decorationSets[event.target.value];
-      document.querySelectorAll(".decoration").forEach((decoration, index) => {
-        decoration.textContent = decorations[index];
-      });
-      localStorage.setItem("dailyBoostDecorations", event.target.value);
-    });
-
     document.getElementById("mute-button").addEventListener("click", (event) => {
       soundMuted = !soundMuted;
       localStorage.setItem("dailyBoostMuted", String(soundMuted));
@@ -361,12 +329,6 @@
     document.body.classList.toggle("reduce-motion", reduceMotion);
     document.getElementById("mute-button").textContent = soundMuted ? "🔇" : "🔊";
     document.getElementById("mute-button").setAttribute("aria-pressed", String(soundMuted));
-
-    const savedDecorations = localStorage.getItem("dailyBoostDecorations") || "nature";
-    document.getElementById("decoration-select").value = savedDecorations;
-    document.querySelectorAll(".decoration").forEach((decoration, index) => {
-      decoration.textContent = decorationSets[savedDecorations][index];
-    });
 
     document.getElementById("surprise-button").addEventListener("click", showDailySurprise);
     document.getElementById("compliment-button").addEventListener("click", triggerMagic);
